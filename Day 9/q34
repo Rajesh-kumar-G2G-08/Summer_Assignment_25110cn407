@@ -1,0 +1,26 @@
+//Write a program to Print reverse number triangle.
+
+12345
+1234
+123
+12
+1
+
+#include<stdio.h>
+int main()
+{
+    int i, j, rows; // Declare variables for loop counters and number of rows
+    printf("Enter the number of rows: "); // Prompt the user to enter the number of rows for the pattern
+    scanf("%d", &rows); // Read the number of rows from the user
+
+    for(i = rows; i >= 1; i--) // Outer loop to iterate through each row in reverse order
+    {
+        for(j = 1; j <= i; j++) // Inner loop to print numbers in each row
+        {
+            printf("%d", j); // Print the current number followed by a space
+        }
+        printf("\n"); // Move to the next line after printing each row
+    }
+    
+    return 0; 
+}

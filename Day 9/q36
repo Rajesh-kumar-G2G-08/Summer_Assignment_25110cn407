@@ -1,0 +1,28 @@
+//Write a program to Print hollow square pattern.
+*****
+*      *
+*      *
+*      *
+*****
+
+#include<stdio.h>
+int main()
+{
+    int i, j, rows; // Declare variables for loop counters and number of rows
+    printf("Enter the number of rows: "); // Prompt the user to enter the number of rows for the pattern
+    scanf("%d", &rows); // Read the number of rows from the user
+
+    for(i = 1; i <= rows; i++) // Outer loop to iterate through each row
+    {
+        for(j = 1; j <= rows; j++) // Inner loop to print characters in each row
+        {
+            if(i == 1 || i == rows || j == 1 || j == rows) // Check if it's the first or last row or column
+                printf("*"); // Print a star for the border
+            else
+                printf(" "); // Print a space for the hollow part
+        }
+        printf("\n"); // Move to the next line after printing each row
+    }
+    
+    return 0; 
+}
