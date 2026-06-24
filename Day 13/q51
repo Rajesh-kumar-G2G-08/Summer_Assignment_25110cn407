@@ -1,0 +1,35 @@
+//A program to find largest and smallest element and comments in the code
+
+#include <stdio.h>
+
+int main() {
+    int size, i;
+    printf("Enter the size of the array: ");
+    scanf("%d", &size);
+
+    int array[size];
+
+    printf("Enter %d integers:\n", size);
+    for (i = 0; i < size; i++) {
+        scanf("%d", &array[i]);
+    }
+
+    // Initialize largest and smallest with the first element of the array
+    int largest = array[0];
+    int smallest = array[0];
+
+    // Iterate through the array to find largest and smallest elements
+    for (i = 1; i < size; i++) {
+        if (array[i] > largest) {
+            largest = array[i]; // Update largest if current element is greater
+        }
+        if (array[i] < smallest) {
+            smallest = array[i]; // Update smallest if current element is smaller
+        }
+    }
+
+    printf("The largest element in the array is: %d\n", largest);
+    printf("The smallest element in the array is: %d\n", smallest);
+
+    return 0;
+}
