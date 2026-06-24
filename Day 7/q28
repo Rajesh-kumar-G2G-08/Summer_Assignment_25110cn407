@@ -1,0 +1,31 @@
+//A program to Recursive reverse number.
+#include<stdio.h>
+int reverseNumber(int n) // Function to reverse a number recursively
+{
+    static int rev = 0; // Static variable to store the reversed number
+    if (n == 0) // Base case: if the number is 0, return the reversed number
+        return rev;
+    else
+    {
+        rev = rev * 10 + n % 10; // Update the reversed number by adding the last digit of n
+        return reverseNumber(n / 10); // Recursive call with the remaining digits of n
+    }
+}
+int main()
+{
+    int n; // Declare a variable to store the number to be reversed
+    printf("Enter a number: "); // Prompt the user to enter a number
+    scanf("%d", &n); // Read the number from the user
+
+    if (n < 0) // Check if the input number is negative
+    {
+        printf("Reverse of a negative number is not defined."); // Print an error message for negative input
+    }
+    else
+    {
+        int result = reverseNumber(n); // Call the reverseNumber function and store the result
+        printf("Reverse of %d is %d", n, result); // Print the reversed number result
+    }
+    
+    return 0; 
+}

@@ -1,0 +1,29 @@
+//A program to Recursive Fibonacci
+#include<stdio.h>
+int fibonacci(int n) // Function to calculate Fibonacci number recursively
+{
+    if (n == 0) // Base case: Fibonacci of 0 is 0
+        return 0;
+    else if (n == 1) // Base case: Fibonacci of 1 is 1
+        return 1;
+    else
+        return fibonacci(n - 1) + fibonacci(n - 2); // Recursive case: F(n) = F(n-1) + F(n-2)
+}
+int main()
+{
+    int n; // Declare a variable to store the position in the Fibonacci sequence
+    printf("Enter a number: "); // Prompt the user to enter a number
+    scanf("%d", &n); // Read the number from the user
+
+    if (n < 0) // Check if the input number is negative
+    {
+        printf("Fibonacci is not defined for negative numbers."); // Print an error message for negative input
+    }
+    else
+    {
+        int result = fibonacci(n); // Call the fibonacci function and store the result
+        printf("Fibonacci of %d is %d", n, result); // Print the Fibonacci result
+    }
+    
+    return 0; 
+}
