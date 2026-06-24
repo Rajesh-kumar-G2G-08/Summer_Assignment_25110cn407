@@ -1,0 +1,18 @@
+//A program to Find x^n without pow()
+#include<stdio.h>
+int main()
+{
+    int x, n, result = 1; // Declare variables to store the base (x), the exponent (n), and the resulting value
+    printf("Enter a number (x): "); // Prompt the user to enter the base number
+    scanf("%d", &x); // Read the base number from the user
+    printf("Enter an exponent (n): "); // Prompt the user to enter the exponent
+    scanf("%d", &n); // Read the exponent from the user
+
+    for (int i = 0; i < n; i++) // Loop from 0 to n-1
+    {
+        result *= x; // Multiply result by x in each iteration to calculate x^n
+    }
+
+    printf("%d^%d = %d", x, n, result); // Print the final result of x raised to the power of n
+    return 0; 
+}

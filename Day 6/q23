@@ -1,0 +1,17 @@
+//A program to Count set bits in a number.
+#include<stdio.h>
+int main()
+{
+    int n, count = 0; // Declare variables to store the number and the count of set bits
+    printf("Enter a number: "); // Prompt the user to enter a number
+    scanf("%d", &n); // Read the number from the user
+
+    while (n > 0) // Loop until n becomes 0
+    {
+        count += n & 1; // Increment count if the least significant bit of n is 1
+        n >>= 1; // Right shift n by 1 to check the next bit
+    }
+
+    printf("Number of set bits: %d", count); // Print the total count of set bits
+    return 0; 
+}

@@ -1,0 +1,26 @@
+//A program to Convert binary to decimal
+#include<stdio.h>
+int main()
+{
+    int binary[32], decimal = 0, i = 0; // Declare variables to store binary digits, the resulting decimal number, and a loop index
+    printf("Enter a binary number: "); // Prompt the user to enter a binary number
+    while (1) // Loop indefinitely until a non-binary digit is entered
+    {
+        int digit;
+        scanf("%d", &digit); // Read a digit from the user
+        if (digit != 0 && digit != 1) // Check if the digit is not binary (not 0 or 1)
+        {
+            break; // If it's not binary, exit the loop
+        }
+        binary[i] = digit; // Store the valid binary digit in the array
+        i++; // Increment the index for the next binary digit
+    }
+
+    for (int j = 0; j < i; j++) // Loop through the stored binary digits
+    {
+        decimal = decimal * 2 + binary[j]; // Convert binary to decimal by multiplying the current decimal value by 2 and adding the next binary digit
+    }
+
+    printf("Decimal representation: %d", decimal); // Print the resulting decimal number
+    return 0; 
+}
