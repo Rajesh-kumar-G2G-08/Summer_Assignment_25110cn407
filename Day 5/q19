@@ -1,0 +1,16 @@
+//A program to Print factors of a number.
+#include<stdio.h>
+int main()
+{
+    int n; // Declare a variable to store the number
+    printf("Enter a number: "); // Prompt the user to enter a number
+    scanf("%d", &n); // Read the number from the user
+
+    printf("Factors of %d are: ", n); // Print a message indicating that factors will be displayed
+    for (int i = 1; i <= n; i++) // Loop through numbers from 1 to n
+    {
+        if (n % i == 0) // Check if i is a factor of n
+            printf("%d ", i); // If true, print that it is a factor followed by a space
+    }
+    return 0; 
+}

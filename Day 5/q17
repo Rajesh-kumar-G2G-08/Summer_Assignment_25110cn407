@@ -1,0 +1,22 @@
+//Program to check the number is perfect or not
+#include<stdio.h>
+#include<math.h>
+int main()
+{
+    int n, sum = 0; // Declare variables to store the number and the sum of its proper divisors
+    printf("Enter a number: "); // Prompt the user to enter a number
+    scanf("%d", &n); // Read the number from the user
+
+    for (int i = 1; i < n; i++) // Loop through numbers from 1 to n-1
+    {
+        if (n % i == 0) // Check if i is a proper divisor of n
+            sum += i; // If true, add it to the sum
+    }
+
+    if (sum == n) // Check if the sum of proper divisors is equal to the original number
+        printf("%d is a perfect number.", n); // If true, print that it is a perfect number
+    else
+        printf("%d is not a perfect number.", n); // If false, print that it is not a perfect number
+
+    return 0; 
+}

@@ -1,0 +1,20 @@
+//A program to Find largest prime factor.
+#include<stdio.h>
+int main()
+{
+    int n, i; // Declare variables to store the number and the loop index
+    printf("Enter a number: "); // Prompt the user to enter a number
+    scanf("%d", &n); // Read the number from the user
+
+    printf("Largest prime factor of %d is: ", n); // Print a message indicating that the largest prime factor will be displayed
+    for (i = 2; i <= n; i++) // Loop through numbers starting from 2 up to n
+    {
+        while (n % i == 0) // Check if i is a factor of n
+        {
+            n /= i; // If true, divide n by i to remove the factor
+        }
+    }
+
+    printf("%d", i - 1); // After the loop, i will be one more than the largest prime factor, so print i - 1
+    return 0; 
+}
