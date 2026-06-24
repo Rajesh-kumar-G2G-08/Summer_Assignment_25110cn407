@@ -1,0 +1,26 @@
+//A program to find maximum frequency element
+
+#include<stdio.h>
+int main() {
+    int arr[100], n, i, j, max_freq = 0, max_elem;
+    printf("Enter the number of elements in the array: ");
+    scanf("%d", &n);
+    printf("Enter the elements of the array: ");
+    for(i=0; i<n; i++) {
+        scanf("%d", &arr[i]);
+    }
+    for(i=0; i<n; i++) {
+        int freq = 1;
+        for(j=i+1; j<n; j++) {
+            if(arr[i] == arr[j]) {
+                freq++;
+            }
+        }
+        if(freq > max_freq) {
+            max_freq = freq;
+            max_elem = arr[i];
+        }
+    }
+    printf("The element with maximum frequency is: %d", max_elem);
+    return 0;
+}
