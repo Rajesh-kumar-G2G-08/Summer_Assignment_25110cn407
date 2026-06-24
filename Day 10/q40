@@ -1,0 +1,33 @@
+Write a program to Print character pyramid.
+    A
+   ABA
+  ABCBA
+ ABCDCBA
+ABCDEDCBA
+
+#include<stdio.h>
+int main()
+{
+    int i, j, rows; // Declare variables for loop counters and number of rows
+    printf("Enter the number of rows: "); // Prompt the user to enter the number of rows for the pattern
+    scanf("%d", &rows); // Read the number of rows from the user
+
+    for(i = 1; i <= rows; i++) // Outer loop to iterate through each row
+    {
+        for(j = 1; j <= (rows - i); j++) // Inner loop to print spaces before the characters
+        {
+            printf(" "); // Print a space
+        }
+        for(j = 1; j <= i; j++) // Inner loop to print increasing characters in each row
+        {
+            printf("%c", 'A' + j - 1); // Print the current character
+        }
+        for(j = (i - 1); j >= 1; j--) // Inner loop to print decreasing characters in each row
+        {
+            printf("%c", 'A' + j - 1); // Print the current character
+        }
+        printf("\n"); // Move to the next line after printing each row
+    }
+    
+    return 0; 
+}

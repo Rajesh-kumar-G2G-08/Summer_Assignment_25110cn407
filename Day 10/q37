@@ -1,0 +1,29 @@
+Write a program to Print star pyramid.
+    *
+   ***
+  *****
+ *******
+*********
+
+#include<stdio.h>
+int main()
+{
+    int i, j, rows; // Declare variables for loop counters and number of rows
+    printf("Enter the number of rows: "); // Prompt the user to enter the number of rows for the pattern
+    scanf("%d", &rows); // Read the number of rows from the user
+
+    for(i = 1; i <= rows; i++) // Outer loop to iterate through each row
+    {
+        for(j = 1; j <= (rows - i); j++) // Inner loop to print spaces before the stars
+        {
+            printf(" "); // Print a space
+        }
+        for(j = 1; j <= (2 * i - 1); j++) // Inner loop to print stars in each row
+        {
+            printf("*"); // Print a star
+        }
+        printf("\n"); // Move to the next line after printing each row
+    }
+    
+    return 0; 
+}
