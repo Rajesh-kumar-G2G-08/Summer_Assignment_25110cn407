@@ -1,0 +1,31 @@
+//A program to find longest word in a string
+
+#include<stdio.h>
+#include<string.h>
+
+int main() {
+    char str[100], longestWord[100] = "";
+    int i, j = 0, maxLen = 0;
+
+    printf("Enter a string: ");
+    fgets(str, sizeof(str), stdin);
+
+    for (i = 0; str[i] != '\0'; i++) {
+        if (str[i] != ' ') {
+            longestWord[j++] = str[i];
+        } else {
+            longestWord[j] = '\0';
+            if (strlen(longestWord) > maxLen) {
+                maxLen = strlen(longestWord);
+            }
+            j = 0;
+        }
+    }
+    longestWord[j] = '\0';
+    if (strlen(longestWord) > maxLen) {
+        maxLen = strlen(longestWord);
+    }
+
+    printf("Longest word is: %s with length: %d\n", longestWord, maxLen);
+    return 0;
+}
