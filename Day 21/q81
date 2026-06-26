@@ -1,0 +1,27 @@
+//a program to Find string length without strlen()
+
+#include <stdio.h>
+
+int main() {
+    char str;
+    int i = 0;
+
+    printf("Enter a string: ");
+    
+    // Safely read the string, including spaces, up to the array limit
+    fgets(str, sizeof(str), stdin);
+
+    // Loop until the null character '\0' is hit
+    while (str[i] != '\0') {
+        i++;
+    }
+
+    // fgets() captures the Enter key ('\n'). 
+    // We subtract 1 to get the exact count of the text.
+    if (i > 0 && str[i - 1] == '\n') {
+        i--;
+    }
+
+    printf("Length of string is: %d\n", i);
+    return 0;
+}
