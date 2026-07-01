@@ -1,1 +1,371 @@
+//A program to Create library management system
 
+#include<stdio.h>
+#include<string.h>
+
+#define MAX_BOOKS 100
+
+// Defining the structure to store book data
+typedef struct {
+    int id;
+    char title[100];
+    char author[50];
+    int year;
+    int available; // 1 for available, 0 for borrowed
+} Book;
+
+// Global array and counter to keep track of records
+Book books[MAX_BOOKS];
+int book_count = 0;
+
+// Function declarations
+void addBook();
+void displayBooks();
+void searchBook();
+
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n=== Library Management System ===\n");
+        printf("1. Add Book Record\n");
+        printf("2. Display All Book Records\n");
+        printf("3. Search Book by ID\n");
+        printf("4. Exit\n");
+        printf("Enter your choice (1-4): ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addBook();
+                break;
+            case 2:
+                displayBooks();
+                break;
+            case 3:
+                searchBook();
+                break;
+            case 4:
+                printf("Exiting program. Goodbye!\n");
+                return 0;
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+    return 0;
+}
+
+// 1. Function to add a new book record
+void addBook() {
+    if (book_count >= MAX_BOOKS) {
+        printf("Book database is full. Cannot add more records.\n");
+        return;
+    }
+
+    Book b;
+    printf("\nEnter Book ID: ");
+    scanf("%d", &b.id);
+    printf("Enter Book Title: ");
+    scanf(" %[^\n]%*c", b.title); // Read string with spaces
+    printf("Enter Author Name: ");
+    scanf(" %[^\n]%*c", b.author); // Read string with spaces
+    printf("Enter Publication Year: ");
+    scanf("%d", &b.year);
+    b.available = 1; // New book is available by default
+
+    // Save to global array
+    books[book_count] = b;
+    book_count++;
+
+    printf("Book record added successfully!\n");
+}
+
+// 2. Function to display all book records
+void displayBooks() {
+    if (book_count == 0) {
+        printf("\nNo book records found to display.\n");
+        return;
+    }
+
+    printf("\n%-10s %-30s %-20s %-10s %-10s\n", "ID", "Title", "Author", "Year", "Available");
+    printf("--------------------------------------------------------------------------\n");
+    for (int i = 0; i < book_count; i++) {
+        printf("%-10d %-30s %-20s %-10d %-10s\n", books[i].id, books[i].title, books[i].author, books[i].year, books[i].available ? "Yes" : "No");
+    }
+}
+
+// 3. Function to search for a book by ID
+void searchBook() {
+    if (book_count == 0) {
+        printf("\nNo book records found to search.\n");
+        return;
+    }
+
+    int searchId;
+    printf("\nEnter the Book ID to search: ");
+    scanf("%d", &searchId);
+
+    for (int i = 0; i < book_count; i++) {
+        if (books[i].id == searchId) {
+            printf("\nBook Found:\n");
+            printf("ID: %d\n", books[i].id);
+            printf("Title: %s\n", books[i].title);
+            printf("Author: %s\n", books[i].author);
+            printf("Publication Year: %d\n", books[i].year);
+            printf("Available: %s\n", books[i].available ? "Yes" : "No");
+            return;
+        }
+    }
+    printf("Book with ID %d not found.\n", searchId);
+}
+
+//4. Function to delete a book record
+void deleteBook() {
+    if (book_count == 0) {
+        printf("\nNo book records found to delete.\n");
+        return;
+    }
+
+    int deleteId;
+    printf("\nEnter the Book ID to delete: ");
+    scanf("%d", &deleteId);
+
+    for (int i = 0; i < book_count; i++) {
+        if (books[i].id == deleteId) {
+            // Shift all subsequent records left to overwrite the deleted record
+            for (int j = i; j < book_count - 1; j++) {
+                books[j] = books[j + 1];
+            }
+            book_count--;
+            printf("Book with ID %d deleted successfully.\n", deleteId);
+            return;
+        }
+    }
+    printf("Book with ID %d not found.\n", deleteId);
+}
+
+//5. Function to update a book record
+void updateBook() {
+    if (book_count == 0) {
+        printf("\nNo book records found to update.\n");
+        return;
+    }
+
+    int updateId;
+    printf("\nEnter the Book ID to update: ");
+    scanf("%d", &updateId);
+
+    for (int i = 0; i < book_count; i++) {
+        if (books[i].id == updateId) {
+            printf("Updating record for Book ID: %d\n", updateId);
+            printf("Enter new title (current: %s): ", books[i].title);
+            scanf(" %[^\n]%*c", books[i].title);
+            printf("Enter new author (current: %s): ", books[i].author);
+            scanf(" %[^\n]%*c", books[i].author);
+            printf("Enter new publication year (current: %d): ", books[i].year);
+            scanf("%d", &books[i].year);
+            printf("Is the book available? (1 for Yes, 0 for No, current: %s): ", books[i].available ? "Yes" : "No");
+            scanf("%d", &books[i].available);
+
+            printf("Book record updated successfully!\n");
+            return;
+        }
+    }
+    printf("Book with ID %d not found.\n", updateId);
+}
+
+//6. Function to borrow a book
+void borrowBook() {
+    if (book_count == 0) {
+        printf("\nNo book records found to borrow.\n");
+        return;
+    }
+
+    int borrowId;
+    printf("\nEnter the Book ID to borrow: ");
+    scanf("%d", &borrowId);
+
+    for (int i = 0; i < book_count; i++) {
+        if (books[i].id == borrowId) {
+            if (books[i].available) {
+                books[i].available = 0; // Mark as borrowed
+                printf("Book with ID %d has been borrowed successfully.\n", borrowId);
+            } else {
+                printf("Book with ID %d is currently not available for borrowing.\n", borrowId);
+            }
+            return;
+        }
+    }
+    printf("Book with ID %d not found.\n", borrowId);
+}
+
+//7. Function to return a book
+void returnBook() {     
+    if (book_count == 0) {
+        printf("\nNo book records found to return.\n");
+        return;
+    }
+
+    int returnId;
+    printf("\nEnter the Book ID to return: ");
+    scanf("%d", &returnId);
+
+    for (int i = 0; i < book_count; i++) {
+        if (books[i].id == returnId) {
+            if (!books[i].available) {
+                books[i].available = 1; // Mark as available
+                printf("Book with ID %d has been returned successfully.\n", returnId);
+            } else {
+                printf("Book with ID %d was not borrowed.\n", returnId);
+            }
+            return;
+        }
+    }
+    printf("Book with ID %d not found.\n", returnId);
+}
+
+//8. Function to display available books
+void displayAvailableBooks() {
+    if (book_count == 0) {
+        printf("\nNo book records found to display.\n");
+        return;
+    }
+
+    printf("\nAvailable Books:\n");
+    printf("%-10s %-30s %-20s %-10s\n", "ID", "Title", "Author", "Year");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < book_count; i++) {
+        if (books[i].available) {
+            printf("%-10d %-30s %-20s %-10d\n", books[i].id, books[i].title, books[i].author, books[i].year);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No available books found.\n");
+    }
+}
+
+//9. Function to display borrowed books
+void displayBorrowedBooks() {
+    if (book_count == 0) {
+        printf("\nNo book records found to display.\n");
+        return;
+    }
+
+    printf("\nBorrowed Books:\n");
+    printf("%-10s %-30s %-20s %-10s\n", "ID", "Title", "Author", "Year");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < book_count; i++) {
+        if (!books[i].available) {
+            printf("%-10d %-30s %-20s %-10d\n", books[i].id, books[i].title, books[i].author, books[i].year);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No borrowed books found.\n");
+    }
+}
+
+//10. Function to search for books by title
+void searchBookByTitle() {
+    if (book_count == 0) {
+        printf("\nNo book records found to search.\n");
+        return;
+    }
+
+    char searchTitle[100];
+    printf("\nEnter the Book Title to search: ");
+    scanf(" %[^\n]%*c", searchTitle);
+
+    printf("\nSearch Results for Title '%s':\n", searchTitle);
+    printf("%-10s %-30s %-20s %-10s %-10s\n", "ID", "Title", "Author", "Year", "Available");
+    printf("--------------------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < book_count; i++) {
+        if (strstr(books[i].title, searchTitle) != NULL) { // Case-sensitive search
+            printf("%-10d %-30s %-20s %-10d %-10s\n", books[i].id, books[i].title, books[i].author, books[i].year, books[i].available ? "Yes" : "No");
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No books found with title containing '%s'.\n", searchTitle);
+    }
+}
+
+//11. Function to search for books by author
+void searchBookByAuthor() {
+    if (book_count == 0) {
+        printf("\nNo book records found to search.\n");
+        return;
+    }
+
+    char searchAuthor[50];
+    printf("\nEnter the Author Name to search: ");
+    scanf(" %[^\n]%*c", searchAuthor);
+
+    printf("\nSearch Results for Author '%s':\n", searchAuthor);
+    printf("%-10s %-30s %-20s %-10s %-10s\n", "ID", "Title", "Author", "Year", "Available");
+    printf("--------------------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < book_count; i++) {
+        if (strstr(books[i].author, searchAuthor) != NULL) { // Case-sensitive search
+            printf("%-10d %-30s %-20s %-10d %-10s\n", books[i].id, books[i].title, books[i].author, books[i].year, books[i].available ? "Yes" : "No");
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No books found by author '%s'.\n", searchAuthor);
+    }
+}
+
+//12. Function to display books published in a specific year
+void displayBooksByYear() { 
+    if (book_count == 0) {
+        printf("\nNo book records found to display.\n");
+        return;
+    }
+
+    int searchYear;
+    printf("\nEnter the Publication Year to filter books: ");
+    scanf("%d", &searchYear);
+
+    printf("\nBooks published in the year %d:\n", searchYear);
+    printf("%-10s %-30s %-20s %-10s %-10s\n", "ID", "Title", "Author", "Year", "Available");
+    printf("--------------------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < book_count; i++) {
+        if (books[i].year == searchYear) {
+            printf("%-10d %-30s %-20s %-10d %-10s\n", books[i].id, books[i].title, books[i].author, books[i].year, books[i].available ? "Yes" : "No");
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No books found published in the year %d.\n", searchYear);
+    }
+}
+
+//13. Function to display books that are currently available
+void displayAvailableBooks() {
+    if (book_count == 0) {
+        printf("\nNo book records found to display.\n");
+        return;
+    }
+
+    printf("\nAvailable Books:\n");
+    printf("%-10s %-30s %-20s %-10s\n", "ID", "Title", "Author", "Year");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < book_count; i++) {
+        if (books[i].available) {
+            printf("%-10d %-30s %-20s %-10d\n", books[i].id, books[i].title, books[i].author, books[i].year);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No available books found.\n");
+    }
+}
+
+//

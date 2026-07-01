@@ -1,0 +1,426 @@
+// A program to Create ticket booking system
+
+#include<stdio.h>
+#include<string.h>
+
+#define MAX_TICKETS 100
+
+// Defining the structure to store ticket data
+typedef struct {
+    int ticketId;
+    char passengerName[50];
+    char destination[50];
+    float price;
+} Ticket;
+
+// Global array and counter to keep track of records
+Ticket tickets[MAX_TICKETS];
+int ticketCount = 0;
+
+// Function declarations
+void addTicket();   
+void displayTickets();
+
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n=== Ticket Booking System ===\n");
+        printf("1. Add Ticket\n");
+        printf("2. Display All Tickets\n");
+        printf("3. Exit\n");
+        printf("Enter your choice (1-3): ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addTicket();
+                break;
+            case 2:
+                displayTickets();
+                break;
+            case 3:
+                printf("Exiting program. Goodbye!\n");
+                return 0;
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+    return 0;
+}
+
+// 1. Function to add a new ticket
+void addTicket() {
+    if (ticketCount >= MAX_TICKETS) {
+        printf("Ticket database is full. Cannot add more records.\n");
+        return;
+    }
+
+    Ticket t;
+    printf("\nEnter Ticket ID: ");
+    scanf("%d", &t.ticketId);
+    printf("Enter Passenger Name: ");
+    scanf(" %[^\n]%*c", t.passengerName); // Read string with spaces
+    printf("Enter Destination: ");
+    scanf(" %[^\n]%*c", t.destination); // Read string with spaces
+    printf("Enter Price: ");
+    scanf("%f", &t.price);
+
+    // Save to global array
+    tickets[ticketCount] = t;
+    ticketCount++;
+
+    printf("Ticket added successfully!\n");
+}
+
+// 2. Function to display all tickets
+void displayTickets() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to display.\n");
+        return;
+    }
+
+    printf("\n%-10s %-30s %-20s %-10s\n", "Ticket ID", "Passenger Name", "Destination", "Price");
+    printf("---------------------------------------------------------------\n");
+    for (int i = 0; i < ticketCount; i++) {
+        printf("%-10d %-30s %-20s %-10.2f\n", tickets[i].ticketId, tickets[i].passengerName, tickets[i].destination, tickets[i].price);
+    }
+}
+
+// 3. Function to search for tickets by destination
+void searchTicketsByDestination() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to search.\n");
+        return;
+    }
+
+    char searchDestination[50];
+    printf("\nEnter the Destination to search: ");
+    scanf(" %[^\n]%*c", searchDestination);
+
+    printf("\nSearch Results for Destination '%s':\n", searchDestination);
+    printf("%-10s %-30s %-20s %-10s\n", "Ticket ID", "Passenger Name", "Destination", "Price");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < ticketCount; i++) {
+        if (strstr(tickets[i].destination, searchDestination) != NULL) { // Case-sensitive search
+            printf("%-10d %-30s %-20s %-10.2f\n", tickets[i].ticketId, tickets[i].passengerName, tickets[i].destination, tickets[i].price);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No tickets found for destination '%s'.\n", searchDestination);
+    }
+}
+
+// 4. Function to display tickets within a specific price range
+void displayTicketsByPriceRange() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to display.\n");
+        return;
+    }
+
+    float lowerBound, upperBound;
+    printf("\nEnter the lower price bound: ");
+    scanf("%f", &lowerBound);
+    printf("Enter the upper price bound: ");
+    scanf("%f", &upperBound);
+
+    printf("\nTickets with Price in the range %.2f - %.2f:\n", lowerBound, upperBound);
+    printf("%-10s %-30s %-20s %-10s\n", "Ticket ID", "Passenger Name", "Destination", "Price");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < ticketCount; i++) {
+        if (tickets[i].price >= lowerBound && tickets[i].price <= upperBound) {
+            printf("%-10d %-30s %-20s %-10.2f\n", tickets[i].ticketId, tickets[i].passengerName, tickets[i].destination, tickets[i].price);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No tickets found with price in the range %.2f - %.2f.\n", lowerBound, upperBound);
+    }
+}
+
+// 5. Function to display the total revenue from all tickets
+void displayTotalRevenue() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to calculate total revenue.\n");
+        return;
+    }
+
+    float totalRevenue = 0.0;
+    for (int i = 0; i < ticketCount; i++) {
+        totalRevenue += tickets[i].price;
+    }
+
+    printf("\nTotal Revenue from All Tickets: %.2f\n", totalRevenue);
+}   
+
+// 6. Function to delete a ticket record by Ticket ID
+void deleteTicket() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to delete.\n");
+        return;
+    }
+
+    int deleteId;
+    printf("\nEnter the Ticket ID to delete: ");
+    scanf("%d", &deleteId);
+
+    for (int i = 0; i < ticketCount; i++) {
+        if (tickets[i].ticketId == deleteId) {
+            // Shift all subsequent records left to overwrite the deleted record
+            for (int j = i; j < ticketCount - 1; j++) {
+                tickets[j] = tickets[j + 1];
+            }
+            ticketCount--;
+            printf("Ticket with ID %d deleted successfully.\n", deleteId);
+            return;
+        }
+    }
+    printf("Ticket with ID %d not found.\n", deleteId);
+}
+
+// 7. Function to update ticket price by Ticket ID
+void updateTicketPrice() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to update.\n");
+        return;
+    }
+
+    int updateId;
+    float newPrice;
+    printf("\nEnter the Ticket ID to update price: ");
+    scanf("%d", &updateId);
+    printf("Enter the new price: ");
+    scanf("%f", &newPrice);
+
+    for (int i = 0; i < ticketCount; i++) {
+        if (tickets[i].ticketId == updateId) {
+            tickets[i].price = newPrice;
+            printf("Ticket with ID %d updated successfully. New Price: %.2f\n", updateId, newPrice);
+            return;
+        }
+    }
+    printf("Ticket with ID %d not found.\n", updateId);
+}
+
+// 8. Function to display tickets sorted by price in ascending order
+void displayTicketsSortedByPrice() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to display.\n");
+        return;
+    }
+
+    // Create a copy of the tickets array for sorting
+    Ticket sortedTickets[MAX_TICKETS];
+    memcpy(sortedTickets, tickets, sizeof(Ticket) * ticketCount);
+
+    // Sort the tickets by price using bubble sort
+    for (int i = 0; i < ticketCount - 1; i++) {
+        for (int j = 0; j < ticketCount - i - 1; j++) {
+            if (sortedTickets[j].price > sortedTickets[j + 1].price) {
+                Ticket temp = sortedTickets[j];
+                sortedTickets[j] = sortedTickets[j + 1];
+                sortedTickets[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("\nTickets Sorted by Price (Ascending):\n");
+    printf("%-10s %-30s %-20s %-10s\n", "Ticket ID", "Passenger Name", "Destination", "Price");
+    printf("---------------------------------------------------------------\n");
+    for (int i = 0; i < ticketCount; i++) {
+        printf("%-10d %-30s %-20s %-10.2f\n", sortedTickets[i].ticketId, sortedTickets[i].passengerName, sortedTickets[i].destination, sortedTickets[i].price);
+    }
+}
+
+// 9. Function to display tickets sorted by destination in alphabetical order
+void displayTicketsSortedByDestination() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to display.\n");
+        return;
+    }
+
+    // Create a copy of the tickets array for sorting
+    Ticket sortedTickets[MAX_TICKETS];
+    memcpy(sortedTickets, tickets, sizeof(Ticket) * ticketCount);
+
+    // Sort the tickets by destination using bubble sort
+    for (int i = 0; i < ticketCount - 1; i++) {
+        for (int j = 0; j < ticketCount - i - 1; j++) {
+            if (strcmp(sortedTickets[j].destination, sortedTickets[j + 1].destination) > 0) {
+                Ticket temp = sortedTickets[j];
+                sortedTickets[j] = sortedTickets[j + 1];
+                sortedTickets[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("\nTickets Sorted by Destination (Alphabetical Order):\n");
+    printf("%-10s %-30s %-20s %-10s\n", "Ticket ID", "Passenger Name", "Destination", "Price");
+    printf("---------------------------------------------------------------\n");
+    for (int i = 0; i < ticketCount; i++) {
+        printf("%-10d %-30s %-20s %-10.2f\n", sortedTickets[i].ticketId, sortedTickets[i].passengerName, sortedTickets[i].destination, sortedTickets[i].price);
+    }
+}
+
+// 10. Function to display tickets for a specific passenger name
+void displayTicketsByPassengerName() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to display.\n");
+        return;
+    }
+
+    char searchPassenger[50];
+    printf("\nEnter the Passenger Name to search: ");
+    scanf(" %[^\n]%*c", searchPassenger);
+
+    printf("\nTickets for Passenger '%s':\n", searchPassenger);
+    printf("%-10s %-30s %-20s %-10s\n", "Ticket ID", "Passenger Name", "Destination", "Price");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < ticketCount; i++) {
+        if (strstr(tickets[i].passengerName, searchPassenger) != NULL) { // Case-sensitive search
+            printf("%-10d %-30s %-20s %-10.2f\n", tickets[i].ticketId, tickets[i].passengerName, tickets[i].destination, tickets[i].price);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No tickets found for Passenger '%s'.\n", searchPassenger);
+    }
+}
+
+// 11. Function to display tickets with price below a certain threshold
+void displayTicketsBelowPrice() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to display.\n");
+        return;
+    }
+
+    float threshold;
+    printf("\nEnter the price threshold: ");
+    scanf("%f", &threshold);
+
+    printf("\nTickets with Price below %.2f:\n", threshold);
+    printf("%-10s %-30s %-20s %-10s\n", "Ticket ID", "Passenger Name", "Destination", "Price");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < ticketCount; i++) {
+        if (tickets[i].price < threshold) {
+            printf("%-10d %-30s %-20s %-10.2f\n", tickets[i].ticketId, tickets[i].passengerName, tickets[i].destination, tickets[i].price);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No tickets found with price below %.2f.\n", threshold);
+    }
+}
+
+// 12. Function to display tickets with price in a specific range
+void displayTicketsInPriceRange() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to display.\n");
+        return;
+    }
+
+    float lowerBound, upperBound;
+    printf("\nEnter the lower price bound: ");
+    scanf("%f", &lowerBound);
+    printf("Enter the upper price bound: ");
+    scanf("%f", &upperBound);
+
+    printf("\nTickets with Price in the range %.2f - %.2f:\n", lowerBound, upperBound);
+    printf("%-10s %-30s %-20s %-10s\n", "Ticket ID", "Passenger Name", "Destination", "Price");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < ticketCount; i++) {
+        if (tickets[i].price >= lowerBound && tickets[i].price <= upperBound) {
+            printf("%-10d %-30s %-20s %-10.2f\n", tickets[i].ticketId, tickets[i].passengerName, tickets[i].destination, tickets[i].price);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No tickets found with price in the range %.2f - %.2f.\n", lowerBound, upperBound);
+    }
+}
+
+// 13. Function to display the total revenue from tickets for a specific destination
+void displayTotalRevenueByDestination() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to calculate total revenue.\n");
+        return;
+    }
+
+    char searchDestination[50];
+    printf("\nEnter the Destination to calculate total revenue: ");
+    scanf(" %[^\n]%*c", searchDestination);
+
+    float totalRevenue = 0.0;
+    for (int i = 0; i < ticketCount; i++) {
+        if (strstr(tickets[i].destination, searchDestination) != NULL) { // Case-sensitive search
+            totalRevenue += tickets[i].price;
+        }
+    }
+
+    printf("\nTotal Revenue from Tickets for Destination '%s': %.2f\n", searchDestination, totalRevenue);
+}
+
+// 14. Function to display tickets sorted by passenger name in alphabetical order
+void displayTicketsSortedByPassengerName() {
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to display.\n");
+        return;
+    }
+
+    // Create a copy of the tickets array for sorting
+    Ticket sortedTickets[MAX_TICKETS];
+    memcpy(sortedTickets, tickets, sizeof(Ticket) * ticketCount);
+
+    // Sort the tickets by passenger name using bubble sort
+    for (int i = 0; i < ticketCount - 1; i++) {
+        for (int j = 0; j < ticketCount - i - 1; j++) {
+            if (strcmp(sortedTickets[j].passengerName, sortedTickets[j + 1].passengerName) > 0) {
+                Ticket temp = sortedTickets[j];
+                sortedTickets[j] = sortedTickets[j + 1];
+                sortedTickets[j + 1] = temp;
+            }
+        }
+    }
+
+    printf("\nTickets Sorted by Passenger Name (Alphabetical Order):\n");
+    printf("%-10s %-30s %-20s %-10s\n", "Ticket ID", "Passenger Name", "Destination", "Price");
+    printf("---------------------------------------------------------------\n");
+    for (int i = 0; i < ticketCount; i++) {
+        printf("%-10d %-30s %-20s %-10.2f\n", sortedTickets[i].ticketId, sortedTickets[i].passengerName, sortedTickets[i].destination, sortedTickets[i].price);
+    }
+}
+
+// 15. Function to display tickets for a specific passenger name and destination
+void displayTicketsByPassengerAndDestination() {
+
+    if (ticketCount == 0) {
+        printf("\nNo ticket records found to display.\n");
+        return;
+    }
+
+    char searchPassenger[50], searchDestination[50];
+    printf("\nEnter the Passenger Name to search: ");
+    scanf(" %[^\n]%*c", searchPassenger);
+    printf("Enter the Destination to search: ");
+    scanf(" %[^\n]%*c", searchDestination);
+
+    printf("\nTickets for Passenger '%s' and Destination '%s':\n", searchPassenger, searchDestination);
+    printf("%-10s %-30s %-20s %-10s\n", "Ticket ID", "Passenger Name", "Destination", "Price");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < ticketCount; i++) {
+        if (strstr(tickets[i].passengerName, searchPassenger) != NULL && strstr(tickets[i].destination, searchDestination) != NULL) { // Case-sensitive search
+            printf("%-10d %-30s %-20s %-10.2f\n", tickets[i].ticketId, tickets[i].passengerName, tickets[i].destination, tickets[i].price);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No tickets found for Passenger '%s' and Destination '%s'.\n", searchPassenger, searchDestination);
+    }
+}
