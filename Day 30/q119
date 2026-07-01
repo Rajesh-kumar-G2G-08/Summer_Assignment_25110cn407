@@ -1,0 +1,111 @@
+//A program to Create mini employee management system
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_EMPLOYEES 100
+
+// Define a structure to hold employee details
+typedef struct {
+    int id;
+    char name[50];
+    char position[50];
+    float salary;
+} Employee;
+
+// Function prototypes
+void addEmployee(Employee employees[], int *count);
+void displayEmployees(Employee employees[], int count);
+
+int main() {
+    Employee employees[MAX_EMPLOYEES];
+    int employeeCount = 0;
+    int choice;
+
+    while (1) {
+        printf("\n=== EMPLOYEE MANAGEMENT SYSTEM ===\n");
+        printf("1. Add New Employee\n");
+        printf("2. Display All Employees\n");
+        printf("3. Exit\n");
+        printf("Enter your choice (1-3): ");
+        
+        // Check if input is a valid integer to avoid infinite loops on char input
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input! Please enter a number.\n");
+            while (getchar() != '\n'); // Clear input buffer
+            continue;
+        }
+
+        switch (choice) {
+            case 1:
+                addEmployee(employees, &employeeCount);
+                break;
+            case 2:
+                displayEmployees(employees, employeeCount);
+                break;
+            case 3:
+                printf("Exiting system. Goodbye!\n");
+                return 0;
+            default:
+                printf("Invalid choice! Please select a valid option.\n");
+        }
+    }
+}
+
+// 1. Add a new employee to the system
+void addEmployee(Employee employees[], int *count) {
+    if (*count >= MAX_EMPLOYEES) {
+        printf("Error: Employee storage is full!\n");
+        return;
+    }
+
+    Employee newEmployee;
+    printf("Enter Employee ID (integer): ");
+    scanf("%d", &newEmployee.id);
+
+    // Validate if the ID already exists
+    for (int i = 0; i < *count; i++) {
+        if (employees[i].id == newEmployee.id) {
+            printf("Error: An employee with ID %d already exists!\n", newEmployee.id);
+            return;
+        }
+    }
+
+    printf("Enter Employee Name (no spaces): ");
+    scanf("%s", newEmployee.name);
+    
+    printf("Enter Position: ");
+    scanf("%s", newEmployee.position);
+    
+    printf("Enter Salary: ");
+    scanf("%f", &newEmployee.salary);
+
+    // Save the new employee into the array and increment total count
+    employees[*count] = newEmployee;
+    (*count)++;
+    
+    printf("Employee '%s' added successfully!\n", newEmployee.name);
+}
+
+// 2. Display all employees in a neat table format
+void displayEmployees(Employee employees[], int count) {
+    if (count == 0) {
+        printf("The employee list is currently empty.\n");
+        return;
+    }
+
+    printf("\n-----------------------------------------------------\n");
+    printf("%-10s %-20s %-20s %-10s\n", "ID", "Name", "Position", "Salary ($)");
+    printf("-----------------------------------------------------\n");
+    
+    for (int i = 0; i < count; i++) {
+        printf("%-10d %-20s %-20s %-10.2f\n", 
+               employees[i].id, 
+               employees[i].name, 
+               employees[i].position, 
+               employees[i].salary);
+    }
+    printf("-----------------------------------------------------\n");
+}
+
+// End of the employee management system program

@@ -1,0 +1,106 @@
+//A program to Develop complete mini project using arrays, strings and functions
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_RECORDS 100
+
+// Define a structure to hold record details
+typedef struct {
+    int id;
+    char name[50];
+    float value;
+} Record;
+
+// Function prototypes
+void addRecord(Record records[], int *count);
+void displayRecords(Record records[], int count);
+
+int main() {
+    Record records[MAX_RECORDS];
+    int recordCount = 0;
+    int choice;
+
+    while (1) {
+        printf("\n=== MINI PROJECT MANAGEMENT SYSTEM ===\n");
+        printf("1. Add New Record\n");
+        printf("2. Display All Records\n");
+        printf("3. Exit\n");
+        printf("Enter your choice (1-3): ");
+        
+        // Check if input is a valid integer to avoid infinite loops on char input
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input! Please enter a number.\n");
+            while (getchar() != '\n'); // Clear input buffer
+            continue;
+        }
+
+        switch (choice) {
+            case 1:
+                addRecord(records, &recordCount);
+                break;
+            case 2:
+                displayRecords(records, recordCount);
+                break;
+            case 3:
+                printf("Exiting system. Goodbye!\n");
+                return 0;
+            default:
+                printf("Invalid choice! Please select a valid option.\n");
+        }
+    }
+}
+
+// 1. Add a new record to the system
+void addRecord(Record records[], int *count) {
+    if (*count >= MAX_RECORDS) {
+        printf("Error: Record storage is full!\n");
+        return;
+    }
+
+    Record newRecord;
+    printf("Enter Record ID (integer): ");
+    scanf("%d", &newRecord.id);
+
+    // Validate if the ID already exists
+    for (int i = 0; i < *count; i++) {
+        if (records[i].id == newRecord.id) {
+            printf("Error: A record with ID %d already exists!\n", newRecord.id);
+            return;
+        }
+    }
+
+    printf("Enter Record Name (no spaces): ");
+    scanf("%s", newRecord.name);
+    
+    printf("Enter Value: ");
+    scanf("%f", &newRecord.value);
+
+    // Save the new record into the array and increment total count
+    records[*count] = newRecord;
+    (*count)++;
+    
+    printf("Record '%s' added successfully!\n", newRecord.name);
+}
+
+// 2. Display all records in a neat table format
+void displayRecords(Record records[], int count) {
+    if (count == 0) {
+        printf("No records to display.\n");
+        return;
+    }
+
+    printf("\n-----------------------------------------------------\n");
+    printf("%-10s %-20s %-10s\n", "ID", "Name", "Value");
+    printf("-----------------------------------------------------\n");
+    
+    for (int i = 0; i < count; i++) {
+        printf("%-10d %-20s %-10.2f\n", 
+               records[i].id, 
+               records[i].name, 
+               records[i].value);
+    }
+    printf("-----------------------------------------------------\n");
+}
+
+// End of program

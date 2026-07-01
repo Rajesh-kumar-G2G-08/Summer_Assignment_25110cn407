@@ -1,0 +1,112 @@
+// a program to Create mini library system.
+
+#include<stdio.h>
+#include<string.h>
+
+#define MAX_BOOKS 100
+
+// Define a structure to hold book details
+typedef struct {
+    int id;
+    char title[100];
+    char author[50];
+    int year;
+} Book;
+
+// Function prototypes
+void addBook(Book library[], int *count);
+void displayLibrary(Book library[], int count);
+
+int main() {
+    Book library[MAX_BOOKS];
+    int bookCount = 0;
+    int choice;
+
+    while (1) {
+        printf("\n=== MINI LIBRARY SYSTEM ===\n");
+        printf("1. Add New Book\n");
+        printf("2. Display All Books\n");
+        printf("3. Exit\n");
+        printf("Enter your choice (1-3): ");
+        
+        // Check if input is a valid integer to avoid infinite loops on char input
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input! Please enter a number.\n");
+            while (getchar() != '\n'); // Clear input buffer
+            continue;
+        }
+
+        switch (choice) {
+            case 1:
+                addBook(library, &bookCount);
+                break;
+            case 2:
+                displayLibrary(library, bookCount);
+                break;
+            case 3:
+                printf("Exiting system. Goodbye!\n");
+                return 0;
+            default:
+                printf("Invalid choice! Please select a valid option.\n");
+        }
+    }
+}
+
+// 1. Add a new book to the library
+void addBook(Book library[], int *count) {
+    if (*count >= MAX_BOOKS) {
+        printf("Error: Library storage is full!\n");
+        return;
+    }
+
+    Book newBook;
+    printf("Enter Book ID (integer): ");
+    scanf("%d", &newBook.id);
+
+    // Validate if the ID already exists
+    for (int i = 0; i < *count; i++) {
+        if (library[i].id == newBook.id) {
+            printf("Error: A book with ID %d already exists!\n", newBook.id);
+            return;
+        }
+    }
+
+    printf("Enter Book Title: ");
+    scanf(" %[^\n]s", newBook.title); // Read string with spaces
+    
+    printf("Enter Author Name: ");
+    scanf(" %[^\n]s", newBook.author); // Read string with spaces
+    
+    printf("Enter Publication Year: ");
+    scanf("%d", &newBook.year);
+
+    // Save the new book into the array and increment total count
+    library[*count] = newBook;
+    (*count)++;
+    
+    printf("Book '%s' added successfully!\n", newBook.title);
+}
+
+// 2. Display all books in a neat table format
+
+void displayLibrary(Book library[], int count) {
+    if (count == 0) {
+        printf("The library is currently empty.\n");
+        return;
+    }
+
+    printf("\n-----------------------------------------------------\n");
+    printf("%-10s %-30s %-20s %-10s\n", "ID", "Title", "Author", "Year");
+    printf("-----------------------------------------------------\n");
+    
+    for (int i = 0; i < count; i++) {
+        printf("%-10d %-30s %-20s %-10d\n", 
+               library[i].id, 
+               library[i].title, 
+               library[i].author, 
+               library[i].year);
+    }
+    printf("-----------------------------------------------------\n");
+}
+
+// End of the mini library system program
