@@ -1,0 +1,112 @@
+//A program to Create menu-driven array operations system
+
+#include<stdio.h>
+#include<math.h>
+
+#define MAX_SIZE 100
+
+// Function declarations
+void insertElement(int arr[], int *size);
+void deleteElement(int arr[], int *size);
+void displayElements(int arr[], int size);
+
+int main() {
+    int arr[MAX_SIZE];
+    int size = 0;
+    int choice;
+
+    while (1) {
+        printf("\n=== Menu-Driven Array Operations ===\n");
+        printf("1. Insert Element\n");
+        printf("2. Delete Element\n");
+        printf("3. Display Elements\n");
+        printf("4. Exit\n");
+        printf("Enter your choice (1-4): ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                insertElement(arr, &size);
+                break;
+            case 2:
+                deleteElement(arr, &size);
+                break;
+            case 3:
+                displayElements(arr, size);
+                break;
+            case 4:
+                printf("Exiting program. Goodbye!\n");
+                return 0;
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+// Function to insert an element into the array
+void insertElement(int arr[], int *size) {
+    if (*size >= MAX_SIZE) {
+        printf("Array is full. Cannot insert more elements.\n");
+        return;
+    }
+
+    int element;
+    printf("Enter the element to insert: ");
+    scanf("%d", &element);
+
+    arr[*size] = element;
+    (*size)++;
+    printf("Element %d inserted successfully!\n", element);
+}
+
+// Function to delete an element from the array
+void deleteElement(int arr[], int *size) {
+    if (*size == 0) {
+        printf("Array is empty. No elements to delete.\n");
+        return;
+    }
+
+    int element, found = 0;
+    printf("Enter the element to delete: ");
+    scanf("%d", &element);
+
+    for (int i = 0; i < *size; i++) {
+        if (arr[i] == element) {
+            found = 1;
+            // Shift elements to the left to overwrite the deleted element
+            for (int j = i; j < *size - 1; j++) {
+                arr[j] = arr[j + 1];
+            }
+            (*size)--;
+            printf("Element %d deleted successfully!\n", element);
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Element %d not found in the array.\n", element);
+    }
+}
+
+// Function to display the elements of the array
+
+void displayElements(int arr[], int size) {
+    if (size == 0) {
+        printf("Array is empty. No elements to display.\n");
+        return;
+    }
+
+    printf("Elements in the array: ");
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+// This program implements a menu-driven array operations system that allows the user to insert, delete, and display elements
+ in an array. The user can choose an operation from the menu, input the required data, and receive feedback on the operation 
+ performed. The program continues to run until the user chooses to exit.
+
+ 

@@ -1,1 +1,76 @@
+//A program to Create menu-driven calculator
 
+#include<stdio.h>
+#include<math.h>
+
+int main() {
+    int choice;
+    double num1, num2, result;
+
+    while (1) {
+        printf("\n=== Menu-Driven Calculator ===\n");
+        printf("1. Addition\n");
+        printf("2. Subtraction\n");
+        printf("3. Multiplication\n");
+        printf("4. Division\n");
+        printf("5. Square Root\n");
+        printf("6. Exit\n");
+        printf("Enter your choice (1-6): ");
+        scanf("%d", &choice);
+
+        if (choice == 6) {
+            printf("Exiting program. Goodbye!\n");
+            break;
+        }
+
+        if (choice < 1 || choice > 6) {
+            printf("Invalid choice! Please try again.\n");
+            continue;
+        }
+
+        if (choice == 5) {
+            printf("Enter a number: ");
+            scanf("%lf", &num1);
+            if (num1 < 0) {
+                printf("Error: Cannot calculate square root of a negative number.\n");
+                continue;
+            }
+            result = sqrt(num1);
+            printf("Square root of %.2lf = %.2lf\n", num1, result);
+        } else {
+            printf("Enter first number: ");
+            scanf("%lf", &num1);
+            printf("Enter second number: ");
+            scanf("%lf", &num2);
+
+            switch (choice) {
+                case 1:
+                    result = num1 + num2;
+                    printf("%.2lf + %.2lf = %.2lf\n", num1, num2, result);
+                    break;
+                case 2:
+                    result = num1 - num2;
+                    printf("%.2lf - %.2lf = %.2lf\n", num1, num2, result);
+                    break;
+                case 3:
+                    result = num1 * num2;
+                    printf("%.2lf * %.2lf = %.2lf\n", num1, num2, result);
+                    break;
+                case 4:
+                    if (num2 == 0) {
+                        printf("Error: Division by zero is not allowed.\n");
+                    } else {
+                        result = num1 / num2;
+                        printf("%.2lf / %.2lf = %.2lf\n", num1, num2, result);
+                    }
+                    break;
+            }
+        }
+    }
+
+    return 0;
+}
+
+// This program implements a menu-driven calculator that allows the user to perform basic arithmetic operations (addition,
+ subtraction, multiplication, division) and calculate the square root of a number. The user can choose an operation from
+  the menu, input the required numbers, and receive the result. The program continues to run until the user chooses to exit.

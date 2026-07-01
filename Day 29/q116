@@ -1,0 +1,174 @@
+//A program to Create inventory management system
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_ITEMS 100
+#define NAME_LENGTH 50
+
+// Define a structure to hold item details
+typedef struct {
+    int id;
+    char name[NAME_LENGTH];
+    int quantity;
+    float price;
+} Item;
+
+// Function prototypes
+void addItem(Item inventory[], int *count);
+void displayInventory(Item inventory[], int count);
+void searchItem(Item inventory[], int count);
+void updateStock(Item inventory[], int count);
+
+int main() {
+    Item inventory[MAX_ITEMS];
+    int itemCount = 0;
+    int choice;
+
+    while (1) {
+        printf("\n=== INVENTORY MANAGEMENT SYSTEM ===\n");
+        printf("1. Add New Item\n");
+        printf("2. Display All Items\n");
+        printf("3. Search Item by ID\n");
+        printf("4. Update Stock Quantity\n");
+        printf("5. Exit\n");
+        printf("Enter your choice (1-5): ");
+        
+        // Check if input is a valid integer to avoid infinite loops on char input
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input! Please enter a number.\n");
+            while (getchar() != '\n'); // Clear input buffer
+            continue;
+        }
+
+        switch (choice) {
+            case 1:
+                addItem(inventory, &itemCount);
+                break;
+            case 2:
+                displayInventory(inventory, itemCount);
+                break;
+            case 3:
+                searchItem(inventory, itemCount);
+                break;
+            case 4:
+                updateStock(inventory, itemCount);
+                break;
+            case 5:
+                printf("Exiting system. Goodbye!\n");
+                exit(0);
+            default:
+                printf("Invalid choice! Please choose an option between 1 and 5.\n");
+        }
+    }
+    return 0;
+}
+
+// 1. Add a unique item to the inventory
+void addItem(Item inventory[], int *count) {
+    if (*count >= MAX_ITEMS) {
+        printf("Error: Inventory storage is full!\n");
+        return;
+    }
+
+    Item newItem;
+    printf("Enter Item ID (integer): ");
+    scanf("%d", &newItem.id);
+
+    // Validate if the ID already exists
+    for (int i = 0; i < *count; i++) {
+        if (inventory[i].id == newItem.id) {
+            printf("Error: An item with ID %d already exists!\n", newItem.id);
+            return;
+        }
+    }
+
+    printf("Enter Item Name (no spaces): ");
+    scanf("%s", newItem.name);
+    
+    printf("Enter Quantity: ");
+    scanf("%d", &newItem.quantity);
+    
+    printf("Enter Price: ");
+    scanf("%f", &newItem.price);
+
+    // Save the new item into the array and increment total count
+    inventory[*count] = newItem;
+    (*count)++;
+    
+    printf("Item '%s' added successfully!\n", newItem.name);
+}
+
+// 2. Display the entire inventory in a neat table format
+void displayInventory(Item inventory[], int count) {
+    if (count == 0) {
+        printf("The inventory is currently empty.\n");
+        return;
+    }
+
+    printf("\n-----------------------------------------------------\n");
+    printf("%-10s %-20s %-10s %-10s\n", "ID", "Name", "Quantity", "Price ($)");
+    printf("-----------------------------------------------------\n");
+    
+    for (int i = 0; i < count; i++) {
+        printf("%-10d %-20s %-10d %-10.2f\n", 
+               inventory[i].id, 
+               inventory[i].name, 
+               inventory[i].quantity, 
+               inventory[i].price);
+    }
+    printf("-----------------------------------------------------\n");
+}
+
+// 3. Look up an item by its unique ID
+void searchItem(Item inventory[], int count) {
+    if (count == 0) {
+        printf("Inventory is empty. Nothing to search.\n");
+        return;
+    }
+
+    int searchId;
+    printf("Enter Item ID to search: ");
+    scanf("%d", &searchId);
+
+    for (int i = 0; i < count; i++) {
+        if (inventory[i].id == searchId) {
+            printf("\nItem Found:\n");
+            printf("ID: %d\nName: %s\nStock: %d\nPrice: $%.2f\n", 
+                   inventory[i].id, inventory[i].name, inventory[i].quantity, inventory[i].price);
+            return;
+        }
+    }
+    printf("Item with ID %d not found.\n", searchId);
+}
+
+// 4. Update the quantity of an existing item (restocking or sales)
+void updateStock(Item inventory[], int count) {
+    if (count == 0) {
+        printf("Inventory is empty. No stock to update.\n");
+        return;
+    }
+
+    int searchId, newQuantity;
+    printf("Enter Item ID to update stock: ");
+    scanf("%d", &searchId);
+
+    for (int i = 0; i < count; i++) {
+        if (inventory[i].id == searchId) {
+            printf("Current stock for %s is %d. Enter new stock total: ", inventory[i].name, inventory[i].quantity);
+            scanf("%d", &newQuantity);
+            
+            if (newQuantity < 0) {
+                printf("Error: Stock quantity cannot be negative.\n");
+                return;
+            }
+            
+            inventory[i].quantity = newQuantity;
+            printf("Stock updated successfully!\n");
+            return;
+        }
+    }
+    printf("Item with ID %d not found.\n", searchId);
+}
+
