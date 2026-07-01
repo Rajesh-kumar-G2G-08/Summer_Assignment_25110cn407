@@ -1,0 +1,171 @@
+//A program to Create salary management system
+
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_EMPLOYEES 50
+
+// Defining the structure to store employee and salary details
+typedef struct {
+    int empId;
+    char name[50];
+    char designation[30];
+    float baseSalary;
+    float hra;        // House Rent Allowance
+    float da;         // Dearness Allowance
+    float pf;         // Provident Fund Deduction
+    float netSalary;  // Take-home salary
+} Employee;
+
+// Global array and counter to manage records
+Employee employees[MAX_EMPLOYEES];
+int employeeCount = 0;
+
+// Function declarations
+void addEmployee();
+void displaySalaries();
+void searchEmployee();
+void calculateSalary(Employee *e);
+
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n=== Salary Management System ===\n");
+        printf("1. Add Employee & Generate Salary\n");
+        printf("2. Display Payroll Sheets\n");
+        printf("3. Search Employee Pay Slip\n");
+        printf("4. Exit\n");
+        printf("Enter your choice (1-4): ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addEmployee();
+                break;
+            case 2:
+                displaySalaries();
+                break;
+            case 3:
+                searchEmployee();
+                break;
+            case 4:
+                printf("Exiting System. Have a great day!\n");
+                return 0;
+            default:
+                printf("Invalid choice! Please select between 1-4.\n");
+        }
+    }
+    return 0;
+}
+
+// Helper function to dynamically compute salary components
+void calculateSalary(Employee *e) {
+    // Standard industrial break-up percentages
+    e->hra = e->baseSalary * 0.20; // 20% of base salary
+    e->da = e->baseSalary * 0.10;  // 10% of base salary
+    e->pf = e->baseSalary * 0.12;  // 12% deduction for PF
+    
+    // Net Salary = (Base + Allowances) - Deductions
+    e->netSalary = (e->baseSalary + e->hra + e->da) - e->pf;
+}
+
+// 1. Function to add employee and process initial payroll
+void addEmployee() {
+    if (employeeCount >= MAX_EMPLOYEES) {
+        printf("Database full! Cannot add more records.\n");
+        return;
+    }
+
+    Employee e;
+    printf("\nEnter Employee ID: ");
+    scanf("%d", &e.empId);
+
+    // Check for duplicate IDs
+    for (int i = 0; i < employeeCount; i++) {
+        if (employees[i].empId == e.empId) {
+            printf("Error: Employee ID %d already exists!\n", e.empId);
+            return;
+        }
+    }
+
+    printf("Enter Name: ");
+    getchar(); // Clear trailing newline buffer
+    fgets(e.name, sizeof(e.name), stdin);
+    e.name[strcspn(e.name, "\n")] = '\0'; // Strip trailing newline
+
+    printf("Enter Designation: ");
+    fgets(e.designation, sizeof(e.designation), stdin);
+    e.designation[strcspn(e.designation, "\n")] = '\0';
+
+    printf("Enter Base Monthly Salary (INR): ");
+    scanf("%f", &e.baseSalary);
+
+    // Run calculations via pointer
+    calculateSalary(&e);
+
+    // Save into the global collection
+    employees[employeeCount] = e;
+    employeeCount++;
+
+    printf("Employee added and salary breakdown processed successfully!\n");
+}
+
+// 2. Function to print the entire payroll spreadsheet
+void displaySalaries() {
+    if (employeeCount == 0) {
+        printf("\nNo employee payroll records found.\n");
+        return;
+    }
+
+    printf("\n%-6s %-20s %-15s %-10s %-8s %-8s %-8s %-10s\n", 
+           "ID", "Name", "Designation", "Base", "HRA", "DA", "PF", "Net Salary");
+    printf("-----------------------------------------------------------------------------------------\n");
+    
+    for (int i = 0; i < employeeCount; i++) {
+        printf("%-6d %-20s %-15s %-10.2f %-8.2f %-8.2f %-8.2f %-10.2f\n",
+               employees[i].empId, 
+               employees[i].name, 
+               employees[i].designation, 
+               employees[i].baseSalary, 
+               employees[i].hra, 
+               employees[i].da, 
+               employees[i].pf, 
+               employees[i].netSalary);
+    }
+}
+
+// 3. Function to view an individual detailed Pay Slip
+void searchEmployee() {
+    if (employeeCount == 0) {
+        printf("\nNo records available to search.\n");
+        return;
+    }
+
+    int searchId;
+    printf("\nEnter Employee ID to fetch Pay Slip: ");
+    scanf("%d", &searchId);
+
+    for (int i = 0; i < employeeCount; i++) {
+        if (employees[i].empId == searchId) {
+            printf("\n====================================\n");
+            printf("             PAY SLIP               \n");
+            printf("====================================\n");
+            printf("Emp ID      : %d\n", employees[i].empId);
+            printf("Name        : %s\n", employees[i].name);
+            printf("Designation : %s\n", employees[i].designation);
+            printf("------------------------------------\n");
+            printf("Earnings:\n");
+            printf("  Base Salary : Rs. %.2f\n", employees[i].baseSalary);
+            printf("  HRA (20%%)   : Rs. %.2f\n", employees[i].hra);
+            printf("  DA (10%%)    : Rs. %.2f\n", employees[i].da);
+            printf("Deductions:\n");
+            printf("  PF (12%%)    : Rs. %.2f\n", employees[i].pf);
+            printf("------------------------------------\n");
+            printf("NET TAKE-HOME: Rs. %.2f\n", employees[i].netSalary);
+            printf("====================================\n");
+            return;
+        }
+    }
+    printf("Employee with ID %d not found.\n", searchId);
+}

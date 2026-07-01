@@ -1,0 +1,149 @@
+//A program to Create employee management system
+
+#include<stdio.h>
+#include<string.h>
+
+#define MAX_EMPLOYEES 100
+// Defining the structure to store employee data
+typedef struct {
+    int id;
+    char name[50];
+    char department[20];
+    float salary;
+} Employee;
+
+// Global array and counter to keep track of records
+Employee employees[MAX_EMPLOYEES];
+int employeeCount = 0;
+
+
+// Function declarations
+void addEmployee();
+void displayEmployees();
+void searchEmployee();
+void deleteEmployee();
+
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n=== Employee Management System ===\n");
+        printf("1. Add Employee Record\n");
+        printf("2. Display All Employee Records\n");
+        printf("3. Search Employee by ID\n");
+        printf("4. Delete Employee Record\n");
+        printf("5. Exit\n");
+        printf("Enter your choice (1-5): ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addEmployee();
+                break;
+            case 2:
+                displayEmployees();
+                break;
+            case 3:
+                searchEmployee();
+                break;
+            case 4:
+                deleteEmployee();
+                break;
+            case 5:
+                printf("Exiting program. bye!\n");
+                return 0;
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+    return 0;
+}
+
+// 1. Function to add a new employee record
+void addEmployee() {
+    if (employeeCount >= MAX_EMPLOYEES) {
+        printf("Employee database is full. Cannot add more records.\n");
+        return;
+    }
+
+    Employee e;
+    printf("\nEnter Employee ID: ");
+    scanf("%d", &e.id);
+    printf("Enter Employee Name: ");
+    scanf(" %[^\n]%*c", e.name); // Read string with spaces
+    printf("Enter Department: ");
+    scanf(" %[^\n]%*c", e.department); // Read string with spaces
+    printf("Enter Salary: ");
+    scanf("%f", &e.salary);
+
+    // Save to global array
+    employees[employeeCount] = e;
+    employeeCount++;
+
+    printf("Record added successfully!\n");
+}
+
+// 2. Function to display all records
+void displayEmployees() {
+    if (employeeCount == 0) {
+        printf("\nNo employee records found.\n");
+        return;
+    }
+
+    printf("\n%-10s %-25s %-20s %-10s\n", "ID", "Name", "Department", "Salary");
+    printf("---------------------------------------------------------------\n");
+    for (int i = 0; i < employeeCount; i++) {
+        printf("%-10d %-25s %-20s %-10.2f\n", employees[i].id, employees[i].name, employees[i].department, employees[i].salary);
+    }
+}
+
+// 3. Function to search for an employee by ID
+void searchEmployee() {
+    if (employeeCount == 0) {
+        printf("\nNo employee records found.\n");
+        return;
+    }
+
+    int searchId;
+    printf("\nEnter Employee ID to search: ");
+    scanf("%d", &searchId);
+
+    for (int i = 0; i < employeeCount; i++) {
+        if (employees[i].id == searchId) {
+            printf("\nEmployee Found:\n");
+            printf("ID: %d\n", employees[i].id);
+            printf("Name: %s\n", employees[i].name);
+            printf("Department: %s\n", employees[i].department);
+            printf("Salary: %.2f\n", employees[i].salary);
+            return;
+        }
+    }
+    printf("Employee with ID %d not found.\n", searchId);
+}
+
+// 4. Function to delete an employee record
+void deleteEmployee() {
+    if (employeeCount == 0) {
+        printf("\nNo employee records found. Nothing to delete.\n");
+        return;
+    }
+
+    int deleteId;
+    printf("\nEnter Employee ID to delete: ");
+    scanf("%d", &deleteId);
+
+    for (int i = 0; i < employeeCount; i++) {
+        if (employees[i].id == deleteId) {
+            // Shift remaining records to fill the gap
+            for (int j = i; j < employeeCount - 1; j++) {
+                employees[j] = employees[j + 1];
+            }
+            employeeCount--;
+            printf("Employee with ID %d deleted successfully.\n", deleteId);
+            return;
+        }
+    }
+    printf("Employee with ID %d not found.\n", deleteId);
+}
+
+// End of Employee Management System

@@ -1,0 +1,587 @@
+//A program to Create marksheet generation system
+
+#include <stdio.h>
+#include <string.h>
+#define MAX_STUDENTS 100
+// Defining the structure to store student marksheet data
+typedef struct {
+    int id;
+    char name[50];
+    char branch[10];
+    float marks[5]; // Assuming 5 subjects
+    float total;
+    float cgpa;
+} Student;
+
+// Global array and counter to keep track of records
+Student students[MAX_STUDENTS];
+int studentCount = 0;
+
+// Function declarations
+void addStudent();
+void displayStudents();
+void searchStudent();
+
+int main() {
+    int choice;
+
+    while (1) {
+        printf("\n=== Marksheet Generation System ===\n");
+        printf("1. Add Student Record\n");
+        printf("2. Display All Student Records\n");
+        printf("3. Search Student by ID\n");
+        printf("4. Exit\n");
+        printf("Enter your choice (1-4): ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                addStudent();
+                break;
+            case 2:
+                displayStudents();
+                break;
+            case 3:
+                searchStudent();
+                break;
+            case 4:
+                printf("Exiting program. Goodbye!\n");
+                return 0;
+            default:
+                printf("Invalid choice! Please try again.\n");
+        }
+    }
+    return 0;
+}
+
+// 1. Function to add a new student record
+void addStudent() {
+    if (studentCount >= MAX_STUDENTS) {
+        printf("Student database is full. Cannot add more records.\n");
+        return;
+    }
+
+    Student s;
+    printf("\nEnter Student ID: ");
+    scanf("%d", &s.id);
+    printf("Enter Student Name: ");
+    scanf(" %[^\n]%*c", s.name); // Read string with spaces
+    printf("Enter Branch: ");
+    scanf(" %[^\n]%*c", s.branch); // Read string with spaces
+
+    s.total = 0;
+    for (int i = 0; i < 5; i++) {
+        printf("Enter marks for subject %d: ", i + 1);
+        scanf("%f", &s.marks[i]);
+        s.total += s.marks[i];
+    }
+    s.cgpa = s.total / 5; // Assuming CGPA is average of marks
+
+    // Save to global array
+    students[studentCount] = s;
+    studentCount++;
+
+    printf("Record added successfully!\n");
+}
+
+// 2. Function to display all records
+void displayStudents() {
+    if (studentCount == 0) {
+        printf("\nNo student records found.\n");
+        return;
+    }
+
+    printf("\n%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    for (int i = 0; i < studentCount; i++) {
+        printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+    }
+}
+
+// 3. Function to search for a student by ID
+void searchStudent() {
+    if (studentCount == 0) {
+        printf("\nDatabase is empty.\n");
+        return;
+    }
+
+    int searchId;
+    printf("\nEnter Student ID to search: ");
+    scanf("%d", &searchId);
+
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].id == searchId) {
+            printf("\nStudent Found!\n");
+            printf("ID: %d\n", students[i].id);
+            printf("Name: %s\n", students[i].name);
+            printf("Branch: %s\n", students[i].branch);
+            printf("Total Marks: %.2f\n", students[i].total);
+            printf("CGPA: %.2f\n", students[i].cgpa);
+            return;
+        }
+    }
+    printf("Student with ID %d not found.\n", searchId);
+}
+
+// 4. Function to delete a student record
+void deleteStudent() {
+    if (studentCount == 0) {
+        printf("\nDatabase is empty. Nothing to delete.\n");
+        return;
+    }
+
+    int deleteId;
+    printf("\nEnter Student ID to delete: ");
+    scanf("%d", &deleteId);
+
+    int indexFound = -1;
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].id == deleteId) {
+            indexFound = i;
+            break;
+        }
+    }
+
+    if (indexFound != -1) {
+        for (int i = indexFound; i < studentCount - 1; i++) {
+            students[i] = students[i + 1]; // Shift records left
+        }
+        studentCount--;
+        printf("Student record with ID %d deleted successfully.\n", deleteId);
+    } else {
+        printf("Student with ID %d not found.\n", deleteId);
+    }
+}
+
+// 5. Function to update a student record
+void updateStudent() {
+    if (studentCount == 0) {
+        printf("\nDatabase is empty. Nothing to update.\n");
+        return;
+    }
+
+    int updateId;
+    printf("\nEnter Student ID to update: ");
+    scanf("%d", &updateId);
+
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].id == updateId) {
+            printf("Updating record for Student ID: %d\n", updateId);
+            printf("Enter new name (current: %s): ", students[i].name);
+            scanf(" %[^\n]%*c", students[i].name);
+            printf("Enter new branch (current: %s): ", students[i].branch);
+            scanf(" %[^\n]%*c", students[i].branch);
+
+            students[i].total = 0;
+            for (int j = 0; j < 5; j++) {
+                printf("Enter new marks for subject %d (current: %.2f): ", j + 1, students[i].marks[j]);
+                scanf("%f", &students[i].marks[j]);
+                students[i].total += students[i].marks[j];
+            }
+            students[i].cgpa = students[i].total / 5;
+
+            printf("Record updated successfully!\n");
+            return;
+        }
+    }
+    printf("Student with ID %d not found.\n", updateId);
+}
+
+// 6. Function to calculate CGPA for all students
+void calculateCGPA() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to calculate CGPA.\n");
+        return;
+    }
+
+    for (int i = 0; i < studentCount; i++) {
+        students[i].total = 0;
+        for (int j = 0; j < 5; j++) {
+            students[i].total += students[i].marks[j];
+        }
+        students[i].cgpa = students[i].total / 5;
+    }
+    printf("CGPA calculated for all students successfully!\n");
+}
+
+// 7. Function to sort students by CGPA in descending order
+void sortStudentsByCGPA() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to sort.\n");
+        return;
+    }
+
+    for (int i = 0; i < studentCount - 1; i++) {
+        for (int j = 0; j < studentCount - i - 1; j++) {
+            if (students[j].cgpa < students[j + 1].cgpa) {
+                Student temp = students[j];
+                students[j] = students[j + 1];
+                students[j + 1] = temp;
+            }
+        }
+    }
+    printf("Students sorted by CGPA in descending order successfully!\n");
+}
+
+// 8. Function to display top N students based on CGPA
+void displayTopNStudents() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    int n;
+    printf("\nEnter the number of top students to display: ");
+    scanf("%d", &n);
+
+    if (n > studentCount) {
+        printf("There are only %d students in the database. Displaying all of them.\n", studentCount);
+        n = studentCount;
+    }
+
+    sortStudentsByCGPA(); // Ensure students are sorted by CGPA before displaying
+
+    printf("\nTop %d Students by CGPA:\n", n);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    for (int i = 0; i < n; i++) {
+        printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+    }
+}
+
+// 9. Function to display students with CGPA above a certain threshold
+void displayStudentsAboveCGPA() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    float threshold;
+    printf("\nEnter the CGPA threshold: ");
+    scanf("%f", &threshold);
+
+    printf("\nStudents with CGPA above %.2f:\n", threshold);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].cgpa > threshold) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found with CGPA above %.2f.\n", threshold);
+    }
+}
+
+// 10. Function to display students with CGPA below a certain threshold
+void displayStudentsBelowCGPA() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    float threshold;
+    printf("\nEnter the CGPA threshold: ");
+    scanf("%f", &threshold);
+
+    printf("\nStudents with CGPA below %.2f:\n", threshold);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].cgpa < threshold) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found with CGPA below %.2f.\n", threshold);
+    }
+}
+
+// 11. Function to display students in a specific branch
+void displayStudentsByBranch() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    char branch[10];
+    printf("\nEnter the branch to filter students: ");
+    scanf(" %[^\n]%*c", branch);
+
+    printf("\nStudents in branch %s:\n", branch);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (strcmp(students[i].branch, branch) == 0) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found in branch %s.\n", branch);
+    }
+}
+
+// 12. Function to display students with marks above a certain threshold in a specific subject
+void displayStudentsAboveMarksInSubject() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    int subjectIndex;
+    float threshold;
+    printf("\nEnter the subject index (1-5): ");
+    scanf("%d", &subjectIndex);
+    if (subjectIndex < 1 || subjectIndex > 5) {
+        printf("Invalid subject index! Please enter a value between 1 and 5.\n");
+        return;
+    }
+
+    printf("Enter the marks threshold: ");
+    scanf("%f", &threshold);
+
+    printf("\nStudents with marks above %.2f in subject %d:\n", threshold, subjectIndex);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].marks[subjectIndex - 1] > threshold) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found with marks above %.2f in subject %d.\n", threshold, subjectIndex);
+    }
+}
+
+// 13. Function to display students with marks below a certain threshold in a specific subject
+void displayStudentsBelowMarksInSubject() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    int subjectIndex;
+    float threshold;
+    printf("\nEnter the subject index (1-5): ");
+    scanf("%d", &subjectIndex);
+    if (subjectIndex < 1 || subjectIndex > 5) {
+        printf("Invalid subject index! Please enter a value between 1 and 5.\n");
+        return;
+    }
+
+    printf("Enter the marks threshold: ");
+    scanf("%f", &threshold);
+
+    printf("\nStudents with marks below %.2f in subject %d:\n", threshold, subjectIndex);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].marks[subjectIndex - 1] < threshold) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found with marks below %.2f in subject %d.\n", threshold, subjectIndex);
+    }
+}
+
+// 14. Function to display students with CGPA in a specific range
+void displayStudentsByCGPARange() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    float lowerBound, upperBound;
+    printf("\nEnter the lower bound of CGPA range: ");
+    scanf("%f", &lowerBound);
+    printf("Enter the upper bound of CGPA range: ");
+    scanf("%f", &upperBound);
+
+    printf("\nStudents with CGPA between %.2f and %.2f:\n", lowerBound, upperBound);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].cgpa >= lowerBound && students[i].cgpa <= upperBound) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found with CGPA in the specified range.\n");
+    }
+}
+
+// 15. Function to display students with total marks above a certain threshold
+void displayStudentsAboveTotalMarks() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    float threshold;
+    printf("\nEnter the total marks threshold: ");
+    scanf("%f", &threshold);
+
+    printf("\nStudents with total marks above %.2f:\n", threshold);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].total > threshold) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found with total marks above %.2f.\n", threshold);
+    }
+}
+
+// 16. Function to display students with total marks below a certain threshold
+void displayStudentsBelowTotalMarks() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    float threshold;
+    printf("\nEnter the total marks threshold: ");
+    scanf("%f", &threshold);
+
+    printf("\nStudents with total marks below %.2f:\n", threshold);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].total < threshold) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found with total marks below %.2f.\n", threshold);
+    }
+}
+
+// 17. Function to display students with a specific name
+void displayStudentsByName() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    char name[50];
+    printf("\nEnter the name to filter students: ");
+    scanf(" %[^\n]%*c", name);
+
+    printf("\nStudents with name %s:\n", name);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (strcmp(students[i].name, name) == 0) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found with name %s.\n", name);
+    }
+}
+
+// 18. Function to display students with a specific ID
+void displayStudentByID() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    int searchId;
+    printf("\nEnter Student ID to display: ");
+    scanf("%d", &searchId);
+
+    for (int i = 0; i < studentCount; i++) {
+        if (students[i].id == searchId) {
+            printf("\nStudent Found!\n");
+            printf("ID: %d\n", students[i].id);
+            printf("Name: %s\n", students[i].name);
+            printf("Branch: %s\n", students[i].branch);
+            printf("Total Marks: %.2f\n", students[i].total);
+            printf("CGPA: %.2f\n", students[i].cgpa);
+            return;
+        }
+    }
+    printf("Student with ID %d not found.\n", searchId);
+}
+
+// 19. Function to display students with a specific branch and CGPA above a certain threshold
+void displayStudentsByBranchAndCGPA() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    char branch[10];
+    float threshold;
+    printf("\nEnter the branch to filter students: ");
+    scanf(" %[^\n]%*c", branch);
+    printf("Enter the CGPA threshold: ");
+    scanf("%f", &threshold);
+
+    printf("\nStudents in branch %s with CGPA above %.2f:\n", branch, threshold);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (strcmp(students[i].branch, branch) == 0 && students[i].cgpa > threshold) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found in branch %s with CGPA above %.2f.\n", branch, threshold);
+    }
+}
+
+// 20. Function to display students with a specific branch and total marks above a certain threshold
+void displayStudentsByBranchAndTotalMarks() {
+    if (studentCount == 0) {
+        printf("\nNo student records found to display.\n");
+        return;
+    }
+
+    char branch[10];
+    float threshold;
+    printf("\nEnter the branch to filter students: ");
+    scanf(" %[^\n]%*c", branch);
+    printf("Enter the total marks threshold: ");
+    scanf("%f", &threshold);
+
+    printf("\nStudents in branch %s with total marks above %.2f:\n", branch, threshold);
+    printf("%-10s %-25s %-10s %-10s %-5s\n", "ID", "Name", "Branch", "Total Marks", "CGPA");
+    printf("---------------------------------------------------------------\n");
+    int found = 0;
+    for (int i = 0; i < studentCount; i++) {
+        if (strcmp(students[i].branch, branch) == 0 && students[i].total > threshold) {
+            printf("%-10d %-25s %-10s %-10.2f %-5.2f\n", students[i].id, students[i].name, students[i].branch, students[i].total, students[i].cgpa);
+            found = 1;
+        }
+    }
+    if (!found) {
+        printf("No students found in branch %s with total marks above %.2f.\n", branch, threshold);
+    }
+}
+
+//
